@@ -1,0 +1,42 @@
+# ---- Build stage -----------------------------------------------------------
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir --user -r requirements.txt
+
+# ---- Runtime stage ----------------------------------------------------------
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Bring in the packages installed in the builder stage (smaller final image).
+COPY --from=builder /root/.local /root/.local
+ENV PATH=/root/.local/bin:$PATH
+
+# Run as a non-root user for defense-in-depth.
+RUN addgroup --system app && adduser --system --ingroup app app
+
+COPY config.py .
+COPY src/ ./src/
+COPY api/ ./api/
+COPY models/ ./models/
+
+RUN chown -R app:app /app
+USER app
+
+EXPOSE 8000
+
+ENV LOG_LEVEL=INFO \
+    API_HOST=0.0.0.0 \
+    API_PORT=8000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
+
+CMD ["uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
