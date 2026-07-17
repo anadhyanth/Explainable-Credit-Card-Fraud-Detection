@@ -280,11 +280,3 @@ This project can be applied to:
 
 
 ---
-
-<div align="center">
-
-### If you found this project useful, consider giving it a star!
-
-**Building Trustworthy AI for Financial Security**
-
-</div>
