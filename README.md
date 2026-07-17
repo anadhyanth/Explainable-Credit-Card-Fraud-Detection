@@ -6,7 +6,7 @@
 
 An end-to-end machine learning pipeline for detecting fraudulent credit card transactions using ensemble learning and Explainable Artificial Intelligence (XAI). The project combines multiple classification models with SHAP to provide accurate and interpretable fraud predictions on highly imbalanced financial transaction data.
 
-<img src="images/banner.png" width="100%">
+<img src="assets/creditcard.png" width="100%">
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?style=for-the-badge&logo=python)
 ![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-ML-orange?style=for-the-badge&logo=scikitlearn)
